@@ -80,3 +80,88 @@ Try `python unruh.py bench --feedback 0` to eliminate the causal handle. If the 
 The code establishes *causal, history-dependent effective connectivity*, not autonomous physics or awareness. To ask whether an actual higher-level world has formed, we would need harder tests: robust long-distance propagation of effective excitations, closed dynamics for coarse-grained variables, transfer of learned laws between microstates, invariance under reimplementation, and genuinely new predictive power versus a matched recurrent state of equal capacity. None is claimed here.
 
 The difference worth keeping: **a second-order relationship can be more than a report about the first level; it can become a slow causal degree of freedom that the first level must subsequently obey.**
+
+## V2: measuring a law for the slow medium
+
+V2 is a deliberately stricter test of the 'world inside a world' idea. **It does not add
+direct diffusion or spatial coupling between slow edges.** Instead, it keeps the
+original microscopic dynamics and switches to a stationary DC pump, giving the
+fast x/v fields time to settle at an equilibrium x*(h) for each slow configuration.
+
+A second-level law can then be *measured*:
+
+```text
+0 = A[h] x*(h) - cubic*x*(h)^3 + constant_force
+T_i(h) = tanh(gain * x*_i(h) * x*_(i+1)(h))
+J_ij   = d T_i(h) / d h_j | at driven equilibrium
+
+dh/dt ≈ (T(h*) + J (h-h*) - h) / tau
+```
+
+The last equation operates **only on h**. The original system has no h-to-h
+coupling, but the measured J has nonzero off-diagonal elements because perturbing
+an edge stiffness changes the *fast* equilibrium displacement elsewhere, which in
+turn changes the slow writing rate there. A new matrix has emerged from the
+dynamics of the first matrix. This is an adiabatic, driven effective law, not
+fundamental spacetime physics.
+
+Run the interactive second-level experiment:
+
+```bash
+python slow_world_gui.py
+```
+
+Or start the original GUI (`python unruh.py gui`) and press
+**Slow world V2**. The original GUI now highlights changes in the effective
+operator (ΔA relative to the fresh medium) and rescales the slow-memory panel:
+the default previous heatmap was visually saturated by the diagonal.
+
+Reproduce the quantitative test and save a three-panel diagnostic PNG:
+
+```bash
+python emergence.py --plot
+python -m unittest discover -s tests -v
+```
+
+A fixed, spatially alternating DC drive pumps a 24-edge ring. A series of 2N+1
+clamped slow-edge interventions measures the Jacobian J of the equilibrated
+writing law. Held-out evaluation then compares **open-loop h-only forecasts**
+against 12 **fully simulated** trajectories with new slow initial conditions and
+new fast x/v perturbations. Prediction begins from h alone; it never calls a fast
+solver during rollout.
+
+| Forecast (12 held-out trials, physical horizon 120) | Mean RMSE ↓ |
+|---|---:|
+| Full measured slow Jacobian | **0.001387** |
+| Nearest-neighbor-only Jacobian | 0.002265 |
+| Independent-edge Jacobian | 0.002917 |
+| Decay to a calibrated fixed point | 0.003015 |
+| Persistence | 0.022371 |
+
+Full Jacobian beats independent-edge and decay models on all 12 held-out
+trials, and the nearest-neighbor version on 11/12. This is a local
+linearized response model, not a learned general-purpose physics engine.
+Different model classes have different effective capacity and this protocol
+calibrates around one driven equilibrium: both are important limitations.
+
+A single slow-edge pulse (magnitude 0.2 at edge 7) causes a maximum
+**0.010397** off-site change in h. With feedback zero, the matched
+off-site response is **exactly zero**. The maximum off-diagonal
+Jacobian entry is **0.343750**. Removing the pump removes the maintained
+fast equilibrium and invalidates the calibrated law. The induced slow response
+is primarily a spatially distributed **relaxation**, not evidence of a
+freely propagating slow wave.
+
+A lightweight snapshot is saved at
+[results/slow_world_summary.json](results/slow_world_summary.json).
+The command generates its full trace JSON and PNG locally.
+
+### What this does *not* establish
+
+This is a *driven, dissipative*, classical oscillator system with deliberately
+engineered slow memory, so the existence of an approximate effective slow law
+is expected from timescale separation. It does **not** demonstrate quantum
+effects, consciousness, self-sustaining autonomous physics, or independence
+from its substrate. It establishes a testable step toward a coarse-grained
+level: a response operator whose off-diagonal interactions are generated
+by — and feed back through — a faster one.

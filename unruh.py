@@ -219,6 +219,7 @@ def gui():
     mode = tk.StringVar(value="coupled")
     steps_per_frame = tk.IntVar(value=5)
     paused = tk.BooleanVar(value=False)
+    delta_operator = tk.BooleanVar(value=True)
     world = World(Config(n=32))
     history = np.zeros((150, world.cfg.n))
     pending = {"kind": "", "elapsed": 0, "duration": 0, "site": 0}
@@ -257,6 +258,12 @@ def gui():
     ttk.Checkbutton(controls, text="Pause", variable=paused).pack(side="left", padx=7)
     ttk.Label(controls, text="Steps/frame").pack(side="left")
     ttk.Spinbox(controls, from_=1, to=20, width=4, textvariable=steps_per_frame).pack(side="left", padx=4)
+    ttk.Checkbutton(controls, text="Show Δoperator", variable=delta_operator).pack(side="left", padx=5)
+    def open_slow_world():
+        import subprocess
+        import sys
+        subprocess.Popen([sys.executable, str(Path(__file__).with_name("slow_world_gui.py"))])
+    ttk.Button(controls, text="Slow world V2", command=open_slow_world).pack(side="left", padx=4)
 
     fig = Figure(figsize=(11, 7), dpi=95, layout="constrained")
     axs = fig.subplots(2, 2)
@@ -266,8 +273,8 @@ def gui():
     ax_field.set(title="Fast field x — waves", xlabel="Ring node", ylabel="Displacement", ylim=(-1.4, 1.4))
     bars = ax_slow.bar(pos, world.h, width=0.85)
     ax_slow.set(title="Slow edge memory h", xlabel="Edge i → i+1", ylim=(-0.5, 0.5))
-    op_im = ax_operator.imshow(world.operator(), vmin=-7, vmax=3, cmap="coolwarm", interpolation="nearest")
-    ax_operator.set(title="Effective acceleration operator A[h]", xlabel="Source node", ylabel="Receiver node")
+    op_im = ax_operator.imshow(np.zeros_like(world.operator()), vmin=-.1, vmax=.1, cmap="RdBu_r", interpolation="nearest")
+    ax_operator.set(title="Δ operator A[h] − A[0]", xlabel="Source node", ylabel="Receiver node")
     hist_im = ax_history.imshow(history, aspect="auto", cmap="RdBu_r", origin="lower", vmin=-1, vmax=1)
     ax_history.set(title="Recent space-time history", xlabel="Node", ylabel="Old → new")
     canvas = FigureCanvasTkAgg(fig, master=root)
@@ -295,7 +302,19 @@ def gui():
             ax_field.set_ylim(-max(0.5, 1.1*np.max(np.abs(world.x))), max(0.5, 1.1*np.max(np.abs(world.x))))
             for bar, height in zip(bars, world.h):
                 bar.set_height(height)
-            op_im.set_data(world.operator())
+            if delta_operator.get():
+                base = World(world.cfg, world.mode).operator()
+                current = world.operator() - base
+                bound = max(.025, float(np.max(np.abs(current))))
+                op_im.set_clim(-bound, bound)
+                ax_operator.set_title("Δ operator A[h] − A[0]")
+            else:
+                current = world.operator()
+                op_im.set_clim(-7, 3)
+                ax_operator.set_title("Absolute acceleration operator A[h]")
+            op_im.set_data(current)
+            slow_limit = max(.025, 1.15 * float(np.max(np.abs(world.h))))
+            ax_slow.set_ylim(-slow_limit, slow_limit)
             hist_im.set_data(history)
             fig.suptitle(f"{world.mode}  •  step {world.steps}  •  E={world.field_energy():.3f}  "
                          f"•  ||h||={np.linalg.norm(world.h):.4f}", fontsize=11)
