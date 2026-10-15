@@ -1,0 +1,150 @@
+{
+  "protocol": "paired-nuisance fast-state-erasure remote-probe v1",
+  "config": {
+    "n": 24,
+    "dt": 0.12,
+    "stiffness": 2.5,
+    "onsite": 0.35,
+    "damping": 0.28,
+    "cubic": 0.018,
+    "tau": 60,
+    "gain": 1.8,
+    "feedback": 0.93
+  },
+  "seeds": 3,
+  "train_pairs": 20,
+  "test_pairs": 20,
+  "records": [
+    {
+      "mode": "coupled",
+      "seed": 0,
+      "accuracy": 1,
+      "correct": 40,
+      "total": 40,
+      "template_distance": 0.0222970442568467,
+      "mean_slow_norm_after_write": 0.0874433519677896
+    },
+    {
+      "mode": "coupled",
+      "seed": 1,
+      "accuracy": 1,
+      "correct": 40,
+      "total": 40,
+      "template_distance": 0.01964207489945799,
+      "mean_slow_norm_after_write": 0.0784772712264297
+    },
+    {
+      "mode": "coupled",
+      "seed": 2,
+      "accuracy": 0.95,
+      "correct": 38,
+      "total": 40,
+      "template_distance": 0.020740982018482672,
+      "mean_slow_norm_after_write": 0.08006326726345894
+    },
+    {
+      "mode": "frozen",
+      "seed": 0,
+      "accuracy": 0.5,
+      "correct": 20,
+      "total": 40,
+      "template_distance": 0,
+      "mean_slow_norm_after_write": 0
+    },
+    {
+      "mode": "frozen",
+      "seed": 1,
+      "accuracy": 0.5,
+      "correct": 20,
+      "total": 40,
+      "template_distance": 0,
+      "mean_slow_norm_after_write": 0
+    },
+    {
+      "mode": "frozen",
+      "seed": 2,
+      "accuracy": 0.5,
+      "correct": 20,
+      "total": 40,
+      "template_distance": 0,
+      "mean_slow_norm_after_write": 0
+    },
+    {
+      "mode": "instant",
+      "seed": 0,
+      "accuracy": 0.5,
+      "correct": 20,
+      "total": 40,
+      "template_distance": 0,
+      "mean_slow_norm_after_write": 0.3959926320004153
+    },
+    {
+      "mode": "instant",
+      "seed": 1,
+      "accuracy": 0.5,
+      "correct": 20,
+      "total": 40,
+      "template_distance": 0,
+      "mean_slow_norm_after_write": 0.373304590785928
+    },
+    {
+      "mode": "instant",
+      "seed": 2,
+      "accuracy": 0.5,
+      "correct": 20,
+      "total": 40,
+      "template_distance": 0,
+      "mean_slow_norm_after_write": 0.3637646727105431
+    },
+    {
+      "mode": "observer",
+      "seed": 0,
+      "accuracy": 0.5,
+      "correct": 20,
+      "total": 40,
+      "template_distance": 0,
+      "mean_slow_norm_after_write": 0.08840585926643976
+    },
+    {
+      "mode": "observer",
+      "seed": 1,
+      "accuracy": 0.5,
+      "correct": 20,
+      "total": 40,
+      "template_distance": 0,
+      "mean_slow_norm_after_write": 0.0792588726391906
+    },
+    {
+      "mode": "observer",
+      "seed": 2,
+      "accuracy": 0.5,
+      "correct": 20,
+      "total": 40,
+      "template_distance": 0,
+      "mean_slow_norm_after_write": 0.08088212934556369
+    }
+  ],
+  "summary": {
+    "coupled": {
+      "mean_accuracy": 0.9833333333333334,
+      "std_accuracy": 0.023570226039551605,
+      "mean_template_distance": 0.020893367058262457
+    },
+    "frozen": {
+      "mean_accuracy": 0.5,
+      "std_accuracy": 0,
+      "mean_template_distance": 0
+    },
+    "instant": {
+      "mean_accuracy": 0.5,
+      "std_accuracy": 0,
+      "mean_template_distance": 0
+    },
+    "observer": {
+      "mean_accuracy": 0.5,
+      "std_accuracy": 0,
+      "mean_template_distance": 0
+    }
+  },
+  "warning": "Toy classical adaptive spring network; no evidence of consciousness or analog gravity."
+}
